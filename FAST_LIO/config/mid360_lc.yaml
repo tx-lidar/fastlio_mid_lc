@@ -1,0 +1,49 @@
+common:
+    lid_topic:  "/livox/lidar"
+    imu_topic:  "/livox/imu"
+    keyFrame_topic: "/aft_pgo_path"
+    keyFrame_id_topic: "/key_frames_ids"
+    time_sync_en: true         #雷达imu时间同步开关 ONLY turn on when external time synchronization is really not possible
+    time_offset_lidar_to_imu: 0.0 # Time offset between lidar and IMU calibrated by other algorithms, e.g. LI-Init (can be found in README).
+                                  # This param will take effect no matter what time_sync_en is. So if the time offset is not known exactly, please set as 0.0
+
+preprocess:
+    lidar_type: 1                # 1 for Livox serials LiDAR, 2 for Velodyne LiDAR, 3 for ouster LiDAR, 
+    scan_line: 4
+    blind: 0.5
+
+mapping:
+    acc_cov: 0.1
+    gyr_cov: 0.1
+    b_acc_cov: 0.0001
+    b_gyr_cov: 0.0001
+    fov_degree:    360
+    det_range:     100.0
+    extrinsic_est_en:  false     # true: enable the online estimation of IMU-LiDAR extrinsic
+    extrinsic_T: [ -0.011, -0.02329, 0.04412 ]
+    # extrinsic_T: [ 0, 0, 0.28]
+    extrinsic_R: [ 1, 0, 0,
+                   0, 1, 0,
+                   0, 0, 1]
+
+publish:
+    path_en:  false
+    scan_publish_en:  true       # false: close all the point cloud output
+    dense_publish_en: true       # false: low down the points number in a global-frame point clouds scan.
+    scan_bodyframe_pub_en: true  # true: output the point cloud scans in IMU-body-frame
+
+pcd_save:
+    pcd_save_en: false
+    interval: -1                 # how many LiDAR frames saved in each pcd file; 
+                                 # -1 : all frames will be saved in ONE pcd file, may lead to memory crash when having too much frames.
+
+point_filter_num: 3             # point filter number
+max_iteration: 3                # max iteration
+filter_size_surf: 0.5           # filter size
+filter_size_map: 0.5            # filter size
+cube_side_length: 1000
+feature_extract_enable: true    #是否使用特征提取
+runtime_pos_log_enable: false   #是否记录运行时的位置信息
+updateFrequency: 30             # 每接收updateFrequency个点云更新一次，不能太大
+updateState: true              # 是否更新状态，只有在updateFrequency大于1时才有效
+recontructKdtree: true         # 是否更新kdtree，只有在updateFrequency大于1时才有效
